@@ -1,6 +1,17 @@
 const express 	= require('express');
 const app 		= express();
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+
+const Post = require('./models/post').model;
+
+mongoose.connect('mongodb://localhost:27017/test', {useNewUrlParser: true, useUnifiedTopology: true})
+	.then(() => {
+		console.log('Connected to DB');
+	})
+	.catch(() => {
+		console.log('Connection failed');
+	})
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -13,8 +24,12 @@ app.use((req, res, next) => {
 });
 
 app.post('/api/posts', (req, res, next) => {
-	const post = req.body;
-	console.log(post);
+	const post = new Post({
+		title: req.body.title,
+		content: req.body.content
+	});
+
+	post.save()
 	res.status(201).json({
 		message: "Post created"
 	});
