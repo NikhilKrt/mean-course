@@ -22,7 +22,8 @@ export class PostService {
 						title: post.title,
 						content: post.content,
 						id: post._id,
-						imagePath: post.imagePath
+						imagePath: post.imagePath,
+						creator: post.creator
 					}
 				}), 
 					maxPost: postData.maxPost
@@ -30,12 +31,15 @@ export class PostService {
 			}))
 			.subscribe((transformedPostData) => {
 				this.posts = transformedPostData.posts;
-				this.postUpdated.next({posts: [...this.posts], postCount: transformedPostData.maxPost});
+				this.postUpdated.next({
+					posts: [...this.posts], 
+					postCount: transformedPostData.maxPost
+				});
 			})
 	}
 
 	getPost(id: string) {
-		return this.http.get<{_id: string, title: string, content: string, imagePath: string}>('http://localhost:3000/api/posts/'+ id);
+		return this.http.get<{_id: string, title: string, content: string, imagePath: string, creator: string}>('http://localhost:3000/api/posts/'+ id);
 	}
 
 	getPostUpdateListener() {
@@ -66,7 +70,8 @@ export class PostService {
 				id: id,
 				title: title,
 				content: content,
-				imagePath: image
+				imagePath: image,
+				creator: null
 			}
 		}
 
